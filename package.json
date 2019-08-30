@@ -1,0 +1,19 @@
+{
+  "name": "asianmarket",
+  "version": "1.0.0",
+  "description": "Asian Market Games Package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnkitaKhurana/AsianMarket.git"
+  },
+  "author": "Ankita Khurana",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnkitaKhurana/AsianMarket/issues"
+  },
+  "homepage": "https://github.com/AnkitaKhurana/AsianMarket#readme"
+}
