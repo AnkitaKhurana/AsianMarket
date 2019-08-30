@@ -19,15 +19,15 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <game-name>Berry Burst</game-name>
+        <game-name>the final pro </game-name>
         <langlib.version>0.1.0</langlib.version>
         <gamerules.version>0.2.0</gamerules.version>
         <gameCategory>Videoslots</gameCategory>
         <pixi-netent.version>1.1.13</pixi-netent.version>
-        <langlib.groupId>com.netent.casino-software.games.videoslots.berry-burst</langlib.groupId>
-        <gamerules.groupId>com.netent.casino-software.games.videoslots.berry-burst</gamerules.groupId>
-        <langlib.artifactId>berryburst-client-langlib</langlib.artifactId>
-        <gamerules.artifactId>berryburst-client-gamerules</gamerules.artifactId>
+        <langlib.groupId>com.netent.casino-software.games.videoslots.thefinalpro</langlib.groupId>
+        <gamerules.groupId>com.netent.casino-software.games.videoslots.thefinalpro</gamerules.groupId>
+        <langlib.artifactId>the-final-pro-client-langlib</langlib.artifactId>
+        <gamerules.artifactId>the-final-pro-client-gamerules</gamerules.artifactId>
     </properties>
     <build>
         <plugins>
