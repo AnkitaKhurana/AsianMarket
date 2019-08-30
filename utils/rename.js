@@ -29,7 +29,6 @@ function updatePom(){
       json.project.properties["langlib.artifactId"] = gameNameWithoutDash+"-client-langlib";
       json.project.properties["gamerules.artifactId"] = gameNameWithoutDash+"-client-gamerules";
 
-
       // Update XML
       xml = convert.json2xml(json,{compact: true, ignoreComment: true, spaces: 4})
       fs.writeFile("./pom.xml", xml, function (err) {
@@ -39,10 +38,18 @@ function updatePom(){
 
 }
 
+function updateJenkins(){
+
+}
 
 
+function updateSonarProperties(){
+
+}
 
 
 
 // Update project files
 updatePom();
+updateJenkins();
+updateSonarProperties();
