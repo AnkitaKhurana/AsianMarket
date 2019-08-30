@@ -1,10 +1,19 @@
 {
   "name": "asianmarket",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Asian Market Games Package",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "help": "node utils/help.js",
+    "update": "node utils/update.js",
+    "rename": "node utils/rename.js",
+    "add": "node utils/addModule.js"
+  },
+  "bin": {
+    "cliTest": "./cli.js",
+    "cloneProject": "./utils/clone.js",
+    "renameproject": "./utils/rename.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/AnkitaKhurana/AsianMarket/issues"
   },
-  "homepage": "https://github.com/AnkitaKhurana/AsianMarket#readme"
+  "homepage": "https://github.com/AnkitaKhurana/AsianMarket#readme",
+  "dependencies": {
+    "xml-js": "^1.6.11"
+  }
 }
