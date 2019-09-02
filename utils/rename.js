@@ -72,6 +72,23 @@ function updateGameRulesPom() {
   });
 }
 
+function updateLanglibPom() {
+  fs.readFile("./pom.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried    
+    json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
+    json.project.artifactId = gameNameWithoutDash + "-langlib";
+
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./pom.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
 function updateClient() {
   updateClientPom();
 }
@@ -93,7 +110,7 @@ function updateGamerules() {
 }
 
 function updateLanglib() {
-
+  updateLanglibPom();
 }
 
 function updateFiles() {
