@@ -54,13 +54,13 @@ function updateFiles() {
     case 'server': updateServer();
       break;
 
-    case 'configuration-desktop': updateConfigDesktop();
+    case 'desktop': updateConfigDesktop();
       break;
 
-    case 'configuration-mobile': updateConfigMobile();
+    case 'mobile': updateConfigMobile();
       break;
 
-    case 'client-generic': updateClient();
+    case 'generic': updateClient();
       break;
 
     case 'distribution': updateDistribution();
