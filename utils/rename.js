@@ -37,39 +37,39 @@ function updateClientPom() {
   });
 }
 
-function updateClient(){
-    updateClientPom();
+function updateClient() {
+  updateClientPom();
 }
 
 
-function updateFiles()
-{  
-  var currentDirectory = process.cwd();
+function updateFiles() {
+  var currentDirectory = process.cwd(), reponame = "";
   if (currentDirectory.indexOf('/') !== -1)
     currentDirectory = currentDirectory.substring(currentDirectory.lastIndexOf('/') + 1);
   else
     currentDirectory = currentDirectory.substring(currentDirectory.lastIndexOf('\\') + 1);
 
-  switch (currentDirectory) {
-    case gameNamewithDash + '-server': updateServer();
+  reponame = currentDirectory.split("-").pop();
+  switch (reponame) {
+    case 'server': updateServer();
       break;
 
-    case gameNamewithDash + '-configuration-desktop': updateConfigDesktop();
+    case 'configuration-desktop': updateConfigDesktop();
       break;
 
-    case gameNamewithDash + '-configuration-mobile': updateConfigMobile();
+    case 'configuration-mobile': updateConfigMobile();
       break;
 
-    case gameNamewithDash + '-client-generic': updateClient();
+    case 'client-generic': updateClient();
       break;
 
-    case gameNamewithDash + '-distribution': updateDistribution();
+    case 'distribution': updateDistribution();
       break;
 
-    case gameNamewithDash + '-gamerules': updateGamerulesPom();
+    case 'gamerules': updateGamerulesPom();
       break;
 
-    case gameNamewithDash + '-langlib': updateLanglib();
+    case 'langlib': updateLanglib();
       break;
 
     default: break;
