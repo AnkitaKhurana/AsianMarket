@@ -123,63 +123,64 @@ function updateDistributionXML() {
     //Rename to new xml
     fs.rename("./src/main/resources/" + oldFileName, "./src/main/resources/" + gameNamewithDash + "-distribution.xml", function (err) {
       if (err) console.log('ERROR: ' + err);
-    });
-    fs.readFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", function (error, data) {
-      var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
-        xml = data;
-
-
-      json.game._attributes["game-name"] = gameNamewithDash;
-
-      //Variants Update
-      for (var i = 0; i < (json.game.variants.variant.length); i++) {
-        if (json.game.variants.variant[i]._attributes.variantName === "mobile") {
-          json.game.variants.variant[i]._attributes.gameId = gameNameWithoutDash + "_mobile_html";
+      fs.readFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", function (error, data) {
+        var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+          xml = data;
+  
+  
+        json.game._attributes["game-name"] = gameNamewithDash;
+  
+        //Variants Update
+        for (var i = 0; i < (json.game.variants.variant.length); i++) {
+          if (json.game.variants.variant[i]._attributes.variantName === "mobile") {
+            json.game.variants.variant[i]._attributes.gameId = gameNameWithoutDash + "_mobile_html";
+          }
+          else if (json.game.variants.variant[i]._attributes.variantName === "desktop-html5") {
+            json.game.variants.variant[i]._attributes.gameId = gameNameWithoutDash + "_not_mobile";
+          }
+          else if (json.game.variants.variant[i]._attributes.variantName === "desktop-openbet-html5") {
+            json.game.variants.variant[i]._attributes.gameId = "netent_" + gameNameWithoutDash + "_not_mobile";
+          }
+          else if (json.game.variants.variant[i]._attributes.variantName === "mobile-openbet") {
+            json.game.variants.variant[i]._attributes.gameId = "netent_" + gameNameWithoutDash + "_mobile_html";
+          }
         }
-        else if (json.game.variants.variant[i]._attributes.variantName === "desktop-html5") {
-          json.game.variants.variant[i]._attributes.gameId = gameNameWithoutDash + "_not_mobile";
+  
+        //clients update
+        if (json.game.clients.client._attributes.clientType === "generic") {
+          json.game.clients.client.artifact._attributes.artifactId = gameNameWithoutDash + "_mobile_html";
+          json.game.clients.client.artifact._attributes.version = Version;
+          json.game.clients.client.installation._attributes.linkPath = "games/" + gameNameWithoutDash + "_mobile_html";
+  
         }
-        else if (json.game.variants.variant[i]._attributes.variantName === "desktop-openbet-html5") {
-          json.game.variants.variant[i]._attributes.gameId = "netent_" + gameNameWithoutDash + "_not_mobile";
+  
+        //Server Update
+        if (json.game.servers.server._attributes.serverType === "geeBundle") {
+          json.game.servers.server.artifact._attributes.artifactId = gameNamewithDash;
+          json.game.servers.server.artifact._attributes.version = Version;
         }
-        else if (json.game.variants.variant[i]._attributes.variantName === "mobile-openbet") {
-          json.game.variants.variant[i]._attributes.gameId = "netent_" + gameNameWithoutDash + "_mobile_html";
+  
+        // configuration update
+        for (var i = 0; i < (json.game.configurations.configuration.length); i++) {
+          if (json.game.configurations.configuration[i]._attributes.configType == "not_mobile") {
+            json.game.configurations.configuration[i].artifact._attributes.artifactId = gameNameWithoutDash + "_not_mobile-config";
+            json.game.configurations.configuration[i].artifact._attributes.version = Version;
+          }
+          else if (json.game.configurations.configuration[i]._attributes.configType == "mobile") {
+            json.game.configurations.configuration[i].artifact._attributes.artifactId = gameNameWithoutDash + "_mobile_html-config";
+            json.game.configurations.configuration[i].artifact._attributes.version = Version;
+          }
         }
-      }
-
-      //clients update
-      if (json.game.clients.client._attributes.clientType === "generic") {
-        json.game.clients.client.artifact._attributes.artifactId = gameNameWithoutDash + "_mobile_html";
-        json.game.clients.client.artifact._attributes.version = Version;
-        json.game.clients.client.installation._attributes.linkPath = "games/" + gameNameWithoutDash + "_mobile_html";
-
-      }
-
-      //Server Update
-      if (json.game.servers.server._attributes.serverType === "geeBundle") {
-        json.game.servers.server.artifact._attributes.artifactId = gameNamewithDash;
-        json.game.servers.server.artifact._attributes.version = Version;
-      }
-
-      // configuration update
-      for (var i = 0; i < (json.game.configurations.configuration.length); i++) {
-        if (json.game.configurations.configuration[i]._attributes.configType == "not_mobile") {
-          json.game.configurations.configuration[i].artifact._attributes.artifactId = gameNameWithoutDash + "_not_mobile-config";
-          json.game.configurations.configuration[i].artifact._attributes.version = Version;
-        }
-        else if (json.game.configurations.configuration[i]._attributes.configType == "mobile") {
-          json.game.configurations.configuration[i].artifact._attributes.artifactId = gameNameWithoutDash + "_mobile_html-config";
-          json.game.configurations.configuration[i].artifact._attributes.version = Version;
-        }
-      }
-
-
-      // Update XML
-      xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
-      fs.writeFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", xml, function (err) {
-        if (err) return console.log(err);
+  
+  
+        // Update XML
+        xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+        fs.writeFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", xml, function (err) {
+          if (err) return console.log(err);
+        });
       });
     });
+    
   });
 }
 
