@@ -54,13 +54,13 @@ function updateGameRulesPom() {
 
     // update langlib Build
     for (i = 0; i < json.project.build.plugins.plugin.length; i++) {
-      if (json.project.build.plugins.plugin[i].artifactId === "maven-dependency-plugin") {
-        for (j = 0; i < json.project.build.plugins.plugin[i].executions.execution.length; i++) {
-          if (json.project.build.plugins.plugin[i].executions.execution[j] === "unpack-langlib") {
-            json.project.build.plugins.plugin[i].executions.execution[j].configuration.artifactItems.artifactItem.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
-            json.project.build.plugins.plugin[i].executions.execution[j].configuration.artifactItems.artifactItem.artifactId = gameNameWithoutDash + "-langlib";
-          }
+
+      if (json.project.build.plugins.plugin[i].artifactId._text === "maven-dependency-plugin") {
+        if (json.project.build.plugins.plugin[i].executions.execution.id._text === "unpack-langlib") {
+          json.project.build.plugins.plugin[i].executions.execution.configuration.artifactItems.artifactItem.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
+          json.project.build.plugins.plugin[i].executions.execution.configuration.artifactItems.artifactItem.artifactId = gameNameWithoutDash + "-langlib";
         }
+
       }
     }
 
