@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 var convert = require('xml-js');
+var PropertiesReader = require('properties-reader');
 var fs = require("fs");
 
 const [, , ...args] = process.argv
@@ -7,6 +8,9 @@ const gameNameWithoutDash = args[0];
 const gameNamewithDash = args[1];
 const gameNameArgs = args.slice(2);
 const Version = "1.0.0-SNAPSHOT";
+const desktop = 'desktop';
+const mobile = 'mobile';
+
 let gameName = "";
 gameNameArgs.forEach(arg => {
   gameName += arg + " ";
@@ -18,13 +22,13 @@ function updateClientPom() {
     var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
       xml = data;
 
-    // Update project Entried    
+    // Update project Entried
     json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
     json.project.artifactId = gameNameWithoutDash + "_mobile_html";
     json.project.name = gameName;
     json.project.version = Version;
 
-    // Update Properties 
+    // Update Properties
     json.project.properties["game-name"] = gameName;
     json.project.properties["langlib.groupId"] = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
     json.project.properties["gamerules.groupId"] = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
@@ -45,12 +49,12 @@ function updateGameRulesPom() {
     var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
       xml = data;
 
-    // Update project Entried    
+    // Update project Entried
     json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
     json.project.artifactId = gameNameWithoutDash + "-gamerules";
     json.project.version = Version;
 
-    // Update Properties 
+    // Update Properties
     json.project.properties["im-2-git-link"] = gameNamewithDash;
     json.project.properties["langlib.version"] = Version;
 
@@ -79,7 +83,7 @@ function updateLanglibPom() {
     var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
       xml = data;
 
-    // Update project Entried    
+    // Update project Entried
     json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
     json.project.artifactId = gameNameWithoutDash + "-langlib";
     json.project.version = Version;
@@ -98,7 +102,7 @@ function updateDistributionPom() {
     var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
       xml = data;
 
-    // Update project Entried    
+    // Update project Entried
     json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash;
     json.project.artifactId = gameNamewithDash + "-distribution";
     json.project.version = Version;
@@ -126,10 +130,10 @@ function updateDistributionXML() {
       fs.readFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", function (error, data) {
         var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
           xml = data;
-  
-  
+
+
         json.game._attributes["game-name"] = gameNamewithDash;
-  
+
         //Variants Update
         for (var i = 0; i < (json.game.variants.variant.length); i++) {
           if (json.game.variants.variant[i]._attributes.variantName === "mobile") {
@@ -145,21 +149,21 @@ function updateDistributionXML() {
             json.game.variants.variant[i]._attributes.gameId = "netent_" + gameNameWithoutDash + "_mobile_html";
           }
         }
-  
+
         //clients update
         if (json.game.clients.client._attributes.clientType === "generic") {
           json.game.clients.client.artifact._attributes.artifactId = gameNameWithoutDash + "_mobile_html";
           json.game.clients.client.artifact._attributes.version = Version;
           json.game.clients.client.installation._attributes.linkPath = "games/" + gameNameWithoutDash + "_mobile_html";
-  
+
         }
-  
+
         //Server Update
         if (json.game.servers.server._attributes.serverType === "geeBundle") {
           json.game.servers.server.artifact._attributes.artifactId = gameNamewithDash;
           json.game.servers.server.artifact._attributes.version = Version;
         }
-  
+
         // configuration update
         for (var i = 0; i < (json.game.configurations.configuration.length); i++) {
           if (json.game.configurations.configuration[i]._attributes.configType == "not_mobile") {
@@ -171,8 +175,8 @@ function updateDistributionXML() {
             json.game.configurations.configuration[i].artifact._attributes.version = Version;
           }
         }
-  
-  
+
+
         // Update XML
         xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
         fs.writeFile("./src/main/resources/" + gameNamewithDash + "-distribution.xml", xml, function (err) {
@@ -180,8 +184,54 @@ function updateDistributionXML() {
         });
       });
     });
-    
+
   });
+}
+
+
+function updateConfigPOM(variant) {
+  fs.readFile("./pom.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.project.groupId = "com.netent.casino-software.games.videoslots." + gameNamewithDash + ".configuration";
+    json.project.artifactId = gameNameWithoutDash + (variant === desktop ? "_not_mobile-config" : "_mobile_html-config");
+    json.project.version = Version;
+    json.project.name = "Game Configuration for " + gameNameWithoutDash;
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./pom.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
+function updateConfigGameCategoryConfig(variant) {
+  fs.readFile("./GameCategoryGroupConfiguration.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.gameCategoryGroupConfiguration._attributes.gameId = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./GameCategoryGroupConfiguration.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
+function updateConfigGameProperties(variant) {
+  var properties = PropertiesReader('./game.properties');
+
+  properties.set('gameid', gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html"));
+  properties.set('game.binaryFileName', gameNameWithoutDash + "_mobile_html.xhtml");
+  properties.set('game.name', gameName);
+  properties.set('game.fullname', gameName);
+  properties.set('game.gameServerIdentifier', gameNameWithoutDash);
+  properties.save('./game.properties', function then(err, data) { if (err) console.log(err) });
+
 }
 
 function updateClient() {
@@ -189,11 +239,16 @@ function updateClient() {
 }
 
 function updateConfigDesktop() {
-
+  updateConfigPOM(desktop);
+  updateConfigGameCategoryConfig(desktop);
+  //updateConfigGameProperties(desktop)
 }
 
 function updateConfigMobile() {
+  updateConfigPOM(mobile);
+  updateConfigGameCategoryConfig(mobile);
 
+  //updateConfigGameProperties(mobile)
 }
 
 function updateDistribution() {
