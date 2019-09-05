@@ -222,6 +222,22 @@ function updateConfigGameCategoryConfig(variant) {
   });
 }
 
+
+function updateConfigGameConfig(variant) {
+  fs.readFile("./GameCategoryGroupConfiguration.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.gameCategoryGroupConfiguration._attributes.gameId = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./GameCategoryGroupConfiguration.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
 function updateConfigGameProperties(variant) {
   var properties = PropertiesReader('./game.properties');
 
@@ -234,6 +250,60 @@ function updateConfigGameProperties(variant) {
 
 }
 
+function updateConfigFreeroundConfiguartionParameters(variant) {
+  fs.readFile("./FreeroundConfigurationParameters.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.freeroundConfigurationParameters._attributes.gameId = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./FreeroundConfigurationParameters.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
+function updateConfigGameConfiguration(variant) {
+  fs.readFile("./GameConfiguration.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.gameConfiguration._attributes.gameId = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+    json.gameConfiguration._attributes.id = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+    json.gameConfiguration.name = gameName + (variant === desktop ? "" : " Touch");
+    json.gameConfiguration.fullname = gameName + (variant === desktop ? "" : " Touch");
+    json.gameConfiguration.gameServerIdentifier = gameNameWithoutDash;
+    json.gameConfiguration.binaryFileName = gameNameWithoutDash + "_mobile_html.xhtml";
+
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./GameConfiguration.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
+
+function updateConfigGameConfigurationParameters(variant) {
+  fs.readFile("./GameConfigurationParameters.xml", function (error, data) {
+    var json = JSON.parse((convert.xml2json(data, { compact: true, spaces: 4 }))),
+      xml = data;
+
+    // Update project Entried
+    json.gameConfigurationParameters._attributes.gameId = gameNameWithoutDash + (variant === desktop ? "_not_mobile" : "_mobile_html");
+
+    // Update XML
+    xml = convert.json2xml(json, { compact: true, ignoreComment: true, spaces: 4 })
+    fs.writeFile("./GameConfigurationParameters.xml", xml, function (err) {
+      if (err) return console.log(err);
+    });
+  });
+}
+
 function updateClient() {
   updateClientPom();
 }
@@ -241,14 +311,20 @@ function updateClient() {
 function updateConfigDesktop() {
   updateConfigPOM(desktop);
   updateConfigGameCategoryConfig(desktop);
+  updateConfigFreeroundConfiguartionParameters(desktop);
   //updateConfigGameProperties(desktop)
+  updateConfigGameConfiguration(desktop);
+  updateConfigGameConfigurationParameters(desktop);
+
 }
 
 function updateConfigMobile() {
   updateConfigPOM(mobile);
   updateConfigGameCategoryConfig(mobile);
-
+  updateConfigFreeroundConfiguartionParameters(mobile);
   //updateConfigGameProperties(mobile)
+  updateConfigGameConfiguration(mobile);
+  updateConfigGameConfigurationParameters(mobile);
 }
 
 function updateDistribution() {
@@ -283,6 +359,9 @@ function updateFiles() {
       break;
 
     case 'generic': updateClient();
+      break;
+
+    case 'client': updateClient();        // Games like double-up-client
       break;
 
     case 'distribution': updateDistribution();
